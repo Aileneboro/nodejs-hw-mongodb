@@ -63,6 +63,7 @@ export const setupServer = () => {
     });
   });
 
+  // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
     res.status(500).json({
       message: 'Something went wrong',
