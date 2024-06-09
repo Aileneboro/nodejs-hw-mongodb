@@ -14,15 +14,8 @@ export const createContactSchema = Joi.object({
     'any.required': 'Phone number is required',
   }),
   email: Joi.string().email(),
-  isFavourite: Joi.boolean().required(),
-  contactType: Joi.string()
-    .min(3)
-    .max(20)
-    .valid('work', 'home', 'personal')
-    .required()
-    .messages({
-      'any.required': 'Contact type is required',
-    }),
+  isFavourite: Joi.boolean(),
+  contactType: Joi.string().min(3).max(20).valid('work', 'home', 'personal'),
 });
 
 export const updateContactSchema = Joi.object({
