@@ -12,6 +12,7 @@ import {
   createContactSchema,
   updateContactSchema,
 } from '../validation/contacts.js';
+import { authenticate } from '../middlewares/authenticate.js';
 
 const contactsRouter = Router();
 
@@ -38,5 +39,9 @@ contactsRouter.delete(
   '/contacts/:contactId',
   ctrlWrapper(deleteContactsController),
 );
+
+contactsRouter.use(authenticate);
+
+contactsRouter.get('/', ctrlWrapper(getContactsController));
 
 export default contactsRouter;
