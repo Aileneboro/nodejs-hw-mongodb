@@ -4,6 +4,7 @@ import { randomBytes } from 'crypto';
 import { UsersCollections } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
+import { Session } from 'inspector';
 
 export const registerUser = async (payload) => {
   const existingUser = await UsersCollections.findOne({ email: payload.email });
@@ -43,4 +44,8 @@ export const loginUser = async (payload) => {
     accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
     refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
   });
+};
+
+export const logoutUser = async (sessionId) => {
+  await SessionsCollection.deleteOne({ _id: sessionId });
 };
