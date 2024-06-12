@@ -4,7 +4,6 @@ import { randomBytes } from 'crypto';
 import { UsersCollections } from '../db/models/user.js';
 import { FIFTEEN_MINUTES, THIRTY_DAY } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
-import { Session } from 'inspector';
 
 export const registerUser = async (payload) => {
   const existingUser = await UsersCollections.findOne({ email: payload.email });
@@ -48,4 +47,41 @@ export const loginUser = async (payload) => {
 
 export const logoutUser = async (sessionId) => {
   await SessionsCollection.deleteOne({ _id: sessionId });
+};
+
+const createSession = () => {
+  const accessToken = randomBytes(30).toString('base64');
+  const refreshToken = randomBytes(30).toString('base64');
+
+  return {
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + FIFTEEN_MINUTES),
+    refreshTokenValidUntil: new Date(Date.now() + THIRTY_DAY),
+  };
+};
+
+export const refreshUsersSession = async ({ sessionId, refreshToken }) => {
+  const session = await SessionsCollection.findOne({
+    _id: sessionId,
+    refreshToken,
+  });
+
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+
+  const isSessionTokenExpired =
+    new Date() > new Date(session.refreshTokenValidUntil);
+
+  if (isSessionTokenExpired) {
+    throw createHttpError(401, 'Session token expired');
+  }
+
+  const newSession = createSession();
+
+  return await SessionsCollection.create({
+    userId: session.userId,
+    ...newSession,
+  });
 };
