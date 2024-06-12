@@ -12,25 +12,21 @@ import { authenticate } from '../middlewares/authenticate.js';
 const authRouter = Router();
 
 authRouter.post(
-  '/auth/register',
+  '/register',
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
 
 authRouter.post(
-  '/auth/login',
+  '/login',
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
 
-authRouter.post(
-  '/auth/logout',
-  authenticate,
-  ctrlWrapper(logoutUserController),
-);
+authRouter.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 
 authRouter.post(
-  '/auth/refresh',
+  '/refresh',
   authenticate,
   ctrlWrapper(refreshUserSessionController),
 );
