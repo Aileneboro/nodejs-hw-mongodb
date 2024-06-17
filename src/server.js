@@ -9,7 +9,7 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import { UPLOAD_DIR } from './constants/index.js';
 
-const PORT = Number(env('PORT')) || 3000;
+const PORT = env.PORT || 3000;
 
 export const setupServer = () => {
   const app = express();
